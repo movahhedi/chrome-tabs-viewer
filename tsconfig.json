@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"noImplicitAny": false,
+		"target": "es2020",
+		"module": "ESNext",
+		"outDir": "dist",
+		"removeComments": false,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"esModuleInterop": true,
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"moduleResolution": "node",
+		"allowImportingTsExtensions": false,
+		"noEmit": false,
+		"typeRoots": ["./node_modules/@types", "./@types", "./node_modules"],
+		"declaration": true,
+		"strict": true,
+		"baseUrl": "./api",
+	},
+	"include": ["src/**/*", "api/**/*", "../shared/src", "rollup.config.js", "vite.config.ts", "*.cjs"],
+	"exclude": ["node_modules", "**/*.spec.ts"]
+}
