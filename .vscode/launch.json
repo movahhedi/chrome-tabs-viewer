@@ -1,0 +1,37 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Run",
+			"type": "node",
+			"request": "launch",
+			"runtimeExecutable": "npx",
+			// "args": ["vite-node", "--watch", "src/index.ts"],
+			"args": ["vite-node", "src/index.ts"],
+			// "args": ["${relativeFile}"],
+			// "runtimeArgs": ["-r", "ts-node/register"],
+			// "runtimeArgs": ["--loader", "ts-node/esm"],
+			"cwd": "${workspaceRoot}",
+			// "protocol": "inspector",
+			"internalConsoleOptions": "openOnSessionStart",
+			"skipFiles": ["<node_internals>/**", "node_modules/**"],
+			"outputCapture": "std"
+		},
+		{
+			"name": "CreateDB",
+			"type": "node",
+			"request": "launch",
+			"runtimeExecutable": "npx",
+			// "args": ["vite-node", "--watch", "src/index.ts"],
+			"args": ["vite-node", "src/CreateDB.ts"],
+			// "args": ["${relativeFile}"],
+			// "runtimeArgs": ["-r", "ts-node/register"],
+			// "runtimeArgs": ["--loader", "ts-node/esm"],
+			"cwd": "${workspaceRoot}",
+			// "protocol": "inspector",
+			"internalConsoleOptions": "openOnSessionStart",
+			"skipFiles": ["<node_internals>/**", "node_modules/**"],
+			"outputCapture": "std"
+		},
+	]
+}

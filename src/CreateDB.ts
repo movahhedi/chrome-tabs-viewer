@@ -1,22 +1,11 @@
 import puppeteer from "puppeteer";
 import dotenv from "dotenv";
-import { writeFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 dotenv.config();
 
 console.time(`chrome`);
 
-const browser = await puppeteer.launch({
-	executablePath: process.env.CHROME_PATH,
-	headless: "new",
-	args: ["--lang=en-US,en", "--no-sandbox", "--disable-setuid-sandbox", "--disable-extensions"],
-	defaultViewport: {
-		width: 1500,
-		height: 900,
-		hasTouch: false,
-		isMobile: false,
-		isLandscape: true,
-	},
-});
+const browser = await createBrowser();
 
 const urls = [
 	"https://familyapp.smov.ir",
@@ -29,8 +18,9 @@ const urls = [
 const results: {
 	id: number;
 	url: string;
-	status: "success" | "failed" | "trying";
+	status: "success" | "failed" | "trying" | "shooting";
 	title: string;
+	tries: number;
 }[] = [];
 
 const promises = urls.map(async (url, i) => {
@@ -40,6 +30,7 @@ const promises = urls.map(async (url, i) => {
 			url,
 			status: "trying",
 			title: "",
+			tries: 0,
 		}) - 1;
 
 	const page = await browser.newPage();
@@ -48,6 +39,7 @@ const promises = urls.map(async (url, i) => {
 		await page.goto(url, { waitUntil: "networkidle0", timeout: 60000 });
 	} catch (error) {
 		results[resultIndex].status = "failed";
+		results[resultIndex].tries++;
 		console.log("FAILED", i, url);
 		return;
 	}
@@ -56,7 +48,9 @@ const promises = urls.map(async (url, i) => {
 
 	results[resultIndex].title = pageTitle;
 
-	await page.screenshot({ path: `data/${i}.png` });
+	results[resultIndex].status = "shooting";
+
+	await page.screenshot({ path: `data/screenshots/${i}.png` });
 
 	results[resultIndex].status = "success";
 });
@@ -75,7 +69,30 @@ await browser.close();
 
 console.timeEnd(`chrome`);
 
-
 function saveResults() {
-	writeFileSync("data/results.json", JSON.stringify(results, undefined, "\t"));
+	return writeFileSync("data/results.json", JSON.stringify(results, undefined, "\t"), {
+		encoding: "utf8",
+	});
+}
+
+function getResults() {
+	return readFileSync("data/results.json", {
+		encoding: "utf8",
+	});
+}
+
+async function createBrowser() {
+	return puppeteer.launch({
+		executablePath: process.env.CHROME_PATH,
+		headless: "new",
+		args: ["--lang=en-US,en", "--no-sandbox", "--disable-setuid-sandbox", "--disable-extensions"],
+		defaultViewport: {
+			width: 1500,
+			height: 900,
+			hasTouch: false,
+			isMobile: false,
+			isLandscape: true,
+			deviceScaleFactor: 0.8,
+		},
+	});
 }
